@@ -1,6 +1,6 @@
-# Pixel Punk Avatars: Python Tutorial
+# Create your own NFT collection: Python
 
-This is a tutorial project for generating [Cryptopunk-like](https://www.larvalabs.com/cryptopunks) avatars from a set of images.
+Script to create image + json collection from folder traits.
 
 ![avatar_sample](./avatar_sample.png)
 
