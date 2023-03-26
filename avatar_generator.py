@@ -24,9 +24,11 @@ class AvatarGenerator:
             layer = Layer(layer_path)
             layers.append(layer)
 
+## <%> If you want to change the % of participation in the generation of a particular layer, enter the number of the specific layer and % below. e.g. layers[2].rarity = 0.80 layer 3 only occurs at 80% frequency.
         layers[2].rarity = 0.80
-        layers[3].rarity = 0.15
-
+        layers[3].rarity = 0.35
+        layers[4].rarity = 0.15
+## </%>
         return layers
 
     def generate_image_sequence(self):
@@ -37,7 +39,7 @@ class AvatarGenerator:
             if layer.should_generate():
                 image_path = layer.get_random_image_path()
                 image_path_sequence.append(image_path)
-                layer_traits.append(os.path.basename(os.path.dirname(str(image_path))))
+                layer_traits.append(os.path.basename(os.path.dirname(str(image_path)))[2:])
                 layer_names.append(os.path.splitext(os.path.basename(image_path))[0])
 
         return image_path_sequence, layer_names, layer_traits
@@ -49,7 +51,9 @@ class AvatarGenerator:
         else:
             bg_color = self.background_color
 
-        image = Image.new("RGBA", (24, 24), bg_color)
+## Parameterization of the generated image. Enter what type of graphics color generated and the size of the.
+        image = Image.new("RGBA", (3500, 3500), bg_color)
+        
         for image_path in image_path_sequence:
             layer_image = Image.open(image_path)
             image = Image.alpha_composite(image, layer_image)
@@ -60,7 +64,6 @@ class AvatarGenerator:
         image_file_name = f"avatar_{image_index}.png"
         image_save_path = os.path.join(self.output_path, image_file_name)
         image.save(image_save_path)
-        # zapisanie pliku tekstowego
         txt_file_name = f"avatar_{image_index}.json"
         txt_file_path = os.path.join(self.output_path, txt_file_name)
         data = {
@@ -68,16 +71,12 @@ class AvatarGenerator:
             "name": f"Collection #{i+1}",
             "description": "New collection.",
             "attributes": [
-                {"trait_type": "face", "value": layer_names[0]},
-                {"trait_type": "eye", "value": layer_names[1]},
             ]
-        }
-        if (len(layer_names) == 3 and len(layer_traits) == 3 and layer_names[2] and layer_traits[2] =='2_hair'):
-            data["attributes"].append({"trait_type": "hair", "value": layer_names[2]})
-        if (len(layer_names) == 3 and len(layer_traits) == 3 and layer_names[2] and layer_traits[2] =='3_accessory'):
-            data["attributes"].append({"trait_type": "accesory", "value": layer_names[2]})        
-        if (len(layer_names) == 4 and len(layer_traits) == 4 and layer_names[3] and layer_traits[3] =='3_accessory'):
-            data["attributes"].append({"trait_type": "accesory", "value": layer_names[3]})
+        } 
+
+        for j in range(len(layer_names)):
+            data["attributes"].append({"trait_type": os.path.basename(layer_traits[j]), "value": layer_names[j]})
+
         with open(txt_file_path, "w") as f:
             f.write(json.dumps(data))
 
