@@ -1,0 +1,10 @@
+Instrukcja:
+
+By wygenerować klikasz run
+
+Utworzy się folder output oraz _pycashe_
+
+Przy kolejnej iteracji należy te foldery usunąć.
+
+
+Liczbę grafik do wygenerowania zmieniamy w pliku generate_avatar

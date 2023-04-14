@@ -10,9 +10,6 @@ from layer import Layer
 class AvatarGenerator:
     def __init__(self, images_path: str):
         self.layers: List[Layer] = self.load_image_layers(images_path)
-        self.background_color = (120, 150, 180)
-        self.rare_background_color = (255, 225, 150)
-        self.rare_background_chance = 0.05
         self.output_path: str = "./output"
         os.makedirs(self.output_path, exist_ok=True)
 
@@ -25,13 +22,16 @@ class AvatarGenerator:
             layers.append(layer)
 
 ## <%> If you want to change the % of participation in the generation of a particular layer, enter the number of the specific layer and % below. e.g. layers[2].rarity = 0.80 layer 3 only occurs at 80% frequency.
-        layers[2].rarity = 0.80
-        layers[3].rarity = 0.35
-        layers[4].rarity = 0.15
+
+        layers[3].rarity = 0.05
+        layers[4].rarity = 0.995
+        layers[5].rarity = 0.10
+        layers[6].rarity = 0.07
 ## </%>
         return layers
 
     def generate_image_sequence(self):
+        print("Start nadawania i klejenia traitow")
         image_path_sequence = []
         layer_names = []
         layer_traits = []
@@ -40,19 +40,14 @@ class AvatarGenerator:
                 image_path = layer.get_random_image_path()
                 image_path_sequence.append(image_path)
                 layer_traits.append(os.path.basename(os.path.dirname(str(image_path)))[2:])
-                layer_names.append(os.path.splitext(os.path.basename(image_path))[0])
-
+                layer_names.append(os.path.splitext(os.path.basename(image_path))[0].split("_")[0])
+        print(layer_names)
         return image_path_sequence, layer_names, layer_traits
-
+    
     def render_avatar_image(self, image_path_sequence: List[str]):
 
-        if random.random() < self.rare_background_chance:
-            bg_color = self.rare_background_color
-        else:
-            bg_color = self.background_color
-
 ## Parameterization of the generated image. Enter what type of graphics color generated and the size of the.
-        image = Image.new("RGBA", (3500, 3500), bg_color)
+        image = Image.new("RGBA", (1088, 1088))
         
         for image_path in image_path_sequence:
             layer_image = Image.open(image_path)
