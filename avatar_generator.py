@@ -8,6 +8,8 @@ from layer import Layer
 
 
 class AvatarGenerator:
+
+
     def __init__(self, images_path: str):
         self.layers: List[Layer] = self.load_image_layers(images_path)
         self.output_path: str = "./output"
@@ -30,8 +32,10 @@ class AvatarGenerator:
 ## </%>
         return layers
 
+
     def generate_image_sequence(self):
-        print("Start nadawania i klejenia traitow")
+        with open("input/banlista.txt", "r") as file:
+            banList = file.read().splitlines()
         image_path_sequence = []
         layer_names = []
         layer_traits = []
@@ -41,7 +45,16 @@ class AvatarGenerator:
                 image_path_sequence.append(image_path)
                 layer_traits.append(os.path.basename(os.path.dirname(str(image_path)))[2:])
                 layer_names.append(os.path.splitext(os.path.basename(image_path))[0].split("_")[0])
-        print(layer_names)
+ 
+        textCheck= "-".join(layer_names)
+
+        for banned_name in banList:
+            print("???????Sprawdzamy: "+banned_name+"/"+textCheck)
+            banned_name = banned_name.strip()  # usuwa białe znaki z początku i końca linii
+            if banned_name in textCheck:
+                print(f"----------Znaleziono("+banned_name+") w ("+textCheck+") i pominięto")
+                continue
+        print("+++++ Wygenerowano("+textCheck+")")
         return image_path_sequence, layer_names, layer_traits
     
     def render_avatar_image(self, image_path_sequence: List[str]):
@@ -78,9 +91,12 @@ class AvatarGenerator:
 
     def generate_avatar(self, n: int = 1):
         print("AvatarGenerator: Generating Avatar!")
-        for i in range(n):
-            image_path_sequence, layer_names, layer_traits  = self.generate_image_sequence()
-            image = self.render_avatar_image(image_path_sequence)
-            self.save_image(image, i, image_path_sequence, layer_names, layer_traits)
+        with open("output/generated_avatars.txt", "a") as f:
+            for i in range(n):
+                image_path_sequence, layer_names, layer_traits = self.generate_image_sequence()
+                image = self.render_avatar_image(image_path_sequence)
+                self.save_image(image, i, image_path_sequence, layer_names, layer_traits)
+                textCheck = "-".join(layer_names)
+                f.write(textCheck + "\n")
 
 
