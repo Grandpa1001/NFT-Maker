@@ -69,10 +69,10 @@ class AvatarGenerator:
 
     def save_image(self, image: Image.Image, i: int = 0, image_path_sequence: List[str] = [], layer_names: List[str] = [], layer_traits: List[str] = []):
         image_index = str(i).zfill(4)
-        image_file_name = f"avatar_{image_index}.png"
+        image_file_name = f"{image_index}.png"
         image_save_path = os.path.join(self.output_path, image_file_name)
         image.save(image_save_path)
-        txt_file_name = f"avatar_{image_index}.json"
+        txt_file_name = f"{image_index}.json"
         txt_file_path = os.path.join(self.output_path, txt_file_name)
         data = {
             "image": image_save_path,
