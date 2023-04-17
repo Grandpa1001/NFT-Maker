@@ -10,6 +10,7 @@ from layer import Layer
 class AvatarGenerator:
 
 
+
     def __init__(self, images_path: str):
         self.layers: List[Layer] = self.load_image_layers(images_path)
         self.output_path: str = "./output"
@@ -56,6 +57,9 @@ class AvatarGenerator:
                 banListText1, banListText2 = banned_name.split("-") # podział na dwie części
                 banListText1 = "#"+banListText1+"#"
                 banListText2 = "#"+banListText2+"#"
+                print(banListText1)
+                print(banListText2)
+                print(textCheck)
                 if banListText1 in textCheck and banListText2 in textCheck:
                     print(f"----------Znaleziono("+banListText2+" i "+banListText1+") w ("+textCheck+") i pominięto")
                     return None, None, None
@@ -74,7 +78,17 @@ class AvatarGenerator:
         return image
 
     def save_image(self, image: Image.Image, i: int = 0, image_path_sequence: List[str] = [], layer_names: List[str] = [], layer_traits: List[str] = []):
-        image_index = str(i)
+
+##################### DO EDYCJI PARAMETR LOSOWOSCI    #####################
+        numberToRoll = 0;   # 0- turn of random number || 1+ - change value to can roll number range 0-(write number) 
+##################### DO EDYCJI PARAMETR LOSOWOSCI    #####################
+
+        if numberToRoll is  0:
+            rollNumber = i+1;
+        else:
+            rollNumber = random.randint(0, numberToRoll)
+
+        image_index = str(rollNumber)
         image_file_name = f"{image_index}.png"
         image_save_path = os.path.join(self.output_path, image_file_name)
         image.save(image_save_path)
@@ -82,7 +96,7 @@ class AvatarGenerator:
         txt_file_path = os.path.join(self.output_path, txt_file_name)
         data = {
             "image": image_save_path,
-            "name": f"Collection #{i+1}",
+            "name": f"Collection #{rollNumber}",
             "description": "New collection.",
             "attributes": [
             ]
