@@ -93,7 +93,7 @@ class AvatarGenerator:
         image_file_name = f"{image_index}.png"
         image_save_path = os.path.join(self.output_path, image_file_name)
         image.save(image_save_path)
-        txt_file_name = f"{image_index}.json"
+        txt_file_name = f"{image_index}"
         txt_file_path = os.path.join(self.output_path, txt_file_name)
         data = {
             "image": image_save_path,
