@@ -51,19 +51,19 @@ class AvatarGenerator:
         textCheck= "-".join(layer_check)
 
         for banned_name in banList:
-            print("???????Sprawdzamy: "+banned_name+"=>>>"+textCheck)
+            #print("???????Sprawdzamy: "+banned_name+"=>>>"+textCheck)
             banned_name = banned_name.strip()  # usuwa białe znaki z początku i końca linii
             if "-" in banned_name:
                 banListText1, banListText2 = banned_name.split("-") # podział na dwie części
                 banListText1 = "#"+banListText1+"#"
                 banListText2 = "#"+banListText2+"#"
-                print(banListText1)
-                print(banListText2)
-                print(textCheck)
+                #print(banListText1)
+                #print(banListText2)
+                #print(textCheck)
                 if banListText1 in textCheck and banListText2 in textCheck:
-                    print(f"----------Znaleziono("+banListText2+" i "+banListText1+") w ("+textCheck+") i pominięto")
+                    print(f"----------BANLIST("+banListText2+" || "+banListText1+") in ("+textCheck+") and skip ")
                     return None, None, None
-            print("+++++ Wygenerowano("+textCheck+")")
+         #   print("+++++ Wygenerowano("+textCheck+")")
         return image_path_sequence, layer_names, layer_traits
 
     
@@ -83,10 +83,11 @@ class AvatarGenerator:
         numberToRoll = 0;   # 0- turn of random number || 1+ - change value to can roll number range 0-(write number) 
 ##################### DO EDYCJI PARAMETR LOSOWOSCI    #####################
 
-        if numberToRoll is  0:
-            rollNumber = i+1;
-        else:
+        if numberToRoll != 0:
             rollNumber = random.randint(0, numberToRoll)
+        else:
+            rollNumber = i;
+            
 
         image_index = str(rollNumber)
         image_file_name = f"{image_index}.png"
@@ -110,13 +111,18 @@ class AvatarGenerator:
 
 
     def generate_avatar(self, n: int = 1):
-        print("AvatarGenerator: Generating Avatar!")
+        print("AvatarGenerator: Generating Avatar! Liczba do wygenerowania" + str(n))
         with open("output/generated_avatars.txt", "a") as f:
-            for i in range(n):
+            generated_count = 0
+            while generated_count < n:
                 image_path_sequence, layer_names, layer_traits = self.generate_image_sequence()
-                if image_path_sequence is not None:
+                if image_path_sequence is not None and layer_names is not None and layer_traits is not None:
+                    generated_count += 1
                     image = self.render_avatar_image(image_path_sequence)
-                    self.save_image(image, i, image_path_sequence, layer_names, layer_traits)
+                    self.save_image(image, generated_count, image_path_sequence, layer_names, layer_traits)
                     f.write(f"{image_path_sequence}\n")
+                    print("Wygenerowano "+ str(generated_count) +" do "+str(n))
 
+                else:
+                    print(f"Nie udało się wygenerować poprawnego obrazu, próbuje ponownie!")
 
